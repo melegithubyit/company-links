@@ -87,44 +87,73 @@ const MoonIcon = () => (
   </svg>
 );
 
+const ShareIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    className="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="18" cy="5" r="3" />
+    <circle cx="6" cy="12" r="3" />
+    <circle cx="18" cy="19" r="3" />
+    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    className="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <polyline points="20,6 9,17 4,12" />
+  </svg>
+);
+
 const links = [
   {
     platform: "Website",
     handle: "pitrontech.et",
     url: "https://pitrontech.et",
     icon: <GlobeIcon />,
-    iconBg: "bg-gradient-to-br from-sky-400 to-cyan-500",
-    shadowColor: "shadow-sky-500/25",
+    hoverBg: "group-hover:from-sky-400 group-hover:to-cyan-600",
   },
   {
     platform: "LinkedIn",
     handle: "Pitron Tech Solutions",
     url: "https://www.linkedin.com/company/pitron-tech-solutions/",
     icon: <LinkedInIcon />,
-    iconBg: "bg-gradient-to-br from-blue-500 to-blue-700",
-    shadowColor: "shadow-blue-500/25",
+    hoverBg: "group-hover:from-blue-500 group-hover:to-blue-700",
   },
   {
     platform: "Instagram",
     handle: "@pitron_tech_sol",
     url: "https://www.instagram.com/pitron_tech_sol?igsh=MTg1cGp1YXhtcGduMQ%3D%3D&utm_source=qr",
     icon: <InstagramIcon />,
-    iconBg: "bg-gradient-to-br from-purple-500 via-rose-500 to-orange-400",
-    shadowColor: "shadow-rose-500/25",
+    hoverBg: "group-hover:from-purple-500 group-hover:to-orange-400",
   },
   {
     platform: "TikTok",
     handle: "@pitron_tech_sol",
     url: "https://www.tiktok.com/@pitron_tech_sol?_r=1&_t=ZS-96b3sTWTI1N",
     icon: <TikTokIcon />,
-    iconBg: "bg-gradient-to-br from-gray-700 to-gray-950",
-    shadowColor: "shadow-gray-800/40",
+    hoverBg: "group-hover:from-gray-700 group-hover:to-black",
   },
 ];
 
 export default function LinksPage() {
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -149,111 +178,155 @@ export default function LinksPage() {
     });
   };
 
+  // Native share sheet on mobile, copy-link fallback on desktop
+  const sharePage = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Pitron Tech Solutions",
+          text: "Connect with Pitron Tech Solutions",
+          url,
+        });
+      } catch {
+        // share sheet dismissed
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard unavailable
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-sky-50/60 dark:from-gray-950 dark:via-gray-900 dark:to-slate-900 transition-colors duration-300">
-      {/* Header */}
-      <header className="flex items-center justify-between px-5 pt-5 pb-3 max-w-md mx-auto">
-        <div className="flex items-center gap-2.5">
-          {(!mounted || !isDark) && (
-            <Image
-              src="/logo-light.png"
-              alt="Pitron logo"
-              width={100}
-              height={36}
-              className="object-contain"
-              priority
-            />
-          )}
-          {mounted && isDark && (
-            <span className="font-semibold text-white tracking-tight text-sm">
-              Pitron
-            </span>
-          )}
-        </div>
-        <button
-          onClick={toggleTheme}
-          className="w-9 h-9 rounded-full flex items-center justify-center bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
-          aria-label="Toggle theme"
-          suppressHydrationWarning
-        >
-          {mounted ? isDark ? <SunIcon /> : <MoonIcon /> : <MoonIcon />}
-        </button>
-      </header>
-
-      {/* Main */}
-      <main className="max-w-md mx-auto px-5 pb-10">
-        {/* Hero */}
+    <div className="relative min-h-screen overflow-hidden bg-[#f3f8f9] dark:bg-ink transition-colors duration-500">
+      {/* Background: brand pattern + soft glows */}
+      <div aria-hidden className="pointer-events-none fixed inset-0">
+        <div className="pattern-bg absolute inset-0 opacity-[0.14] dark:opacity-45" />
         <div
-          className="flex flex-col items-center text-center pt-8 pb-8"
-          style={{ animation: "fadeInUp 0.5s ease-out forwards" }}
-        >
-          {/* {(!mounted || !isDark) && (
-            <div className="relative mb-5">
-              <div
-                className="flex items-center justify-center"
-                style={{ animation: "float 3.5s ease-in-out infinite" }}
-              >
-                <Image
-                  src="/logo-light.png"
-                  alt="Pitron Tech Solutions"
-                  width={160}
-                  height={60}
-                  className="object-contain drop-shadow-md"
-                  priority
-                />
-              </div>
-              <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-sky-500 via-indigo-500 to-purple-600 opacity-10 blur-xl -z-10" />
-            </div>
-          )} */}
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight leading-tight">
-            Pitron Tech Solutions
-          </h1>
-          <p className="mt-1.5 text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide">
-            Tech that connects
-          </p>
-        </div>
+          className="absolute -top-32 -left-24 w-96 h-96 rounded-full bg-brand-light/30 dark:bg-brand/50 blur-3xl"
+          style={{ animation: "drift 14s ease-in-out infinite" }}
+        />
+        <div
+          className="absolute -bottom-40 -right-24 w-[28rem] h-[28rem] rounded-full bg-brand/20 dark:bg-brand-light/20 blur-3xl"
+          style={{ animation: "drift 18s ease-in-out infinite reverse" }}
+        />
+      </div>
 
-        {/* Link cards */}
-        <div className="flex flex-col gap-3">
-          {links.map((link, i) => (
-            <a
-              key={link.platform}
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex items-center gap-4 bg-white/80 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-4 border border-gray-100/80 dark:border-gray-700/40 shadow-sm hover:shadow-xl dark:hover:shadow-gray-950/60 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
-              style={{
-                animation: `fadeInUp 0.5s ease-out ${0.15 + i * 0.1}s both`,
-              }}
+      <div className="relative">
+        {/* Header */}
+        <header className="flex items-center justify-end gap-2 px-5 pt-5 max-w-md mx-auto">
+          <button
+            onClick={sharePage}
+            className="h-9 px-3.5 rounded-full flex items-center gap-1.5 text-xs font-semibold bg-white/80 dark:bg-white/10 backdrop-blur-md border border-brand/10 dark:border-white/10 text-brand dark:text-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
+            aria-label="Share this page"
+          >
+            {copied ? <CheckIcon /> : <ShareIcon />}
+            {copied ? "Copied!" : "Share"}
+          </button>
+          <button
+            onClick={toggleTheme}
+            className="w-9 h-9 rounded-full flex items-center justify-center bg-white/80 dark:bg-white/10 backdrop-blur-md border border-brand/10 dark:border-white/10 text-brand dark:text-white shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95"
+            aria-label="Toggle theme"
+            suppressHydrationWarning
+          >
+            {mounted ? isDark ? <SunIcon /> : <MoonIcon /> : <MoonIcon />}
+          </button>
+        </header>
+
+        {/* Main */}
+        <main className="max-w-md mx-auto px-5 pb-10">
+          {/* Hero */}
+          <div
+            className="flex flex-col items-center text-center pt-10 pb-9"
+            style={{ animation: "fadeInUp 0.6s ease-out forwards" }}
+          >
+            <div
+              className="relative"
+              style={{ animation: "float 5s ease-in-out infinite" }}
             >
-              <div
-                className={`w-12 h-12 rounded-xl ${link.iconBg} flex items-center justify-center text-white shadow-lg ${link.shadowColor} flex-shrink-0 transition-transform duration-300 group-hover:scale-110`}
-              >
-                {link.icon}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-semibold text-gray-900 dark:text-white text-sm leading-tight">
-                  {link.platform}
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                  {link.handle}
-                </div>
-              </div>
-              <div className="text-gray-300 dark:text-gray-600 group-hover:text-gray-500 dark:group-hover:text-gray-400 transition-all duration-200 group-hover:translate-x-1">
-                <ChevronRight />
-              </div>
-            </a>
-          ))}
-        </div>
-      </main>
+              <div className="absolute inset-x-10 inset-y-0 rounded-full bg-brand-light/30 blur-2xl -z-10" />
+              <Image
+                src="/PitronTech-light.png"
+                alt="Pitron Technology Solutions"
+                width={14999}
+                height={2022}
+                sizes="(max-width: 640px) 340px, 440px"
+                className="w-[340px] sm:w-[440px] h-auto dark:hidden"
+                fetchPriority="high"
+              />
+              <Image
+                src="/PitronTech-dark2.png"
+                alt="Pitron Technology Solutions"
+                width={14999}
+                height={2022}
+                sizes="(max-width: 640px) 340px, 440px"
+                className="w-[340px] sm:w-[440px] h-auto hidden dark:block"
+                fetchPriority="high"
+              />
+            </div>
+            <div className="mt-6 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 bg-white/70 dark:bg-white/10 backdrop-blur-md border border-brand/15 dark:border-white/10">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              <span className="text-xs font-semibold tracking-wide text-brand dark:text-white/90">
+                Tech that connects
+              </span>
+            </div>
+          </div>
 
-      {/* Footer */}
-      <footer
-        className="text-center py-6 text-xs text-gray-400 dark:text-gray-600"
-        style={{ animation: "fadeInUp 0.5s ease-out 0.6s both" }}
-      >
-        © {new Date().getFullYear()} Pitron Tech Solutions
-      </footer>
+          {/* Link cards */}
+          <div className="flex flex-col gap-3.5">
+            {links.map((link, i) => (
+              <a
+                key={link.platform}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative overflow-hidden flex items-center gap-4 rounded-2xl p-4 bg-white/85 dark:bg-brand-deep/60 backdrop-blur-xl border border-brand/10 dark:border-white/10 shadow-[0_4px_20px_-8px_rgba(30,81,96,0.25)] hover:shadow-[0_16px_40px_-12px_rgba(30,81,96,0.45)] dark:hover:shadow-[0_16px_40px_-12px_rgba(79,163,184,0.35)] hover:border-brand/30 dark:hover:border-brand-light/40 transition-all duration-300 hover:-translate-y-1 active:scale-[0.98]"
+                style={{
+                  animation: `fadeInUp 0.5s ease-out ${0.2 + i * 0.1}s both`,
+                }}
+              >
+                {/* Shine sweep on hover */}
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/60 dark:via-white/10 to-transparent opacity-0 group-hover:opacity-100 group-hover:[animation:shine_0.9s_ease-out]"
+                />
+                <div
+                  className={`relative w-12 h-12 rounded-xl bg-gradient-to-br from-brand to-brand-deep ${link.hoverBg} flex items-center justify-center text-white shadow-lg shadow-brand/30 dark:ring-1 dark:ring-brand-light/40 flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:-rotate-6`}
+                >
+                  {link.icon}
+                </div>
+                <div className="relative flex-1 min-w-0">
+                  <div className="font-semibold text-brand-deep dark:text-white text-[15px] leading-tight">
+                    {link.platform}
+                  </div>
+                  <div className="text-xs text-brand/70 dark:text-white/55 truncate mt-0.5">
+                    {link.handle}
+                  </div>
+                </div>
+                <div className="relative w-8 h-8 rounded-full flex items-center justify-center text-brand/40 dark:text-white/40 group-hover:bg-brand group-hover:text-white dark:group-hover:bg-brand-light dark:group-hover:text-ink transition-all duration-300 group-hover:translate-x-0.5">
+                  <ChevronRight />
+                </div>
+              </a>
+            ))}
+          </div>
+        </main>
+
+        {/* Footer */}
+        <footer
+          className="text-center pb-8 pt-2 text-xs text-brand/60 dark:text-white/40"
+          style={{ animation: "fadeInUp 0.5s ease-out 0.7s both" }}
+        >
+          © {new Date().getFullYear()} Pitron Technology Solutions
+        </footer>
+      </div>
     </div>
   );
 }

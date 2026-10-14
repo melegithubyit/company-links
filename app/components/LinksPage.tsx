@@ -275,7 +275,7 @@ export default function LinksPage() {
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
               <span className="max-w-[260px] text-xs font-semibold leading-relaxed tracking-wide text-brand dark:text-white/90">
-                Tech that connects text to change it to Done today!
+                Done today!
               </span>
             </div>
           </div>

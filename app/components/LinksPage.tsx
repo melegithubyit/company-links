@@ -274,8 +274,8 @@ export default function LinksPage() {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75 animate-ping" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
-              <span className="text-xs font-semibold tracking-wide text-brand dark:text-white/90">
-                Tech that connects
+              <span className="max-w-[260px] text-xs font-semibold leading-relaxed tracking-wide text-brand dark:text-white/90">
+                Tech that connects text to change it to Done today!
               </span>
             </div>
           </div>
